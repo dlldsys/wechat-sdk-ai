@@ -1,6 +1,6 @@
 {
   "name": "wechat-sdk-ai",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A comprehensive Node.js SDK for WeChat Official Accounts and Mini Programs",
   "homepage": "https://github.com/dlldsys/wechat-sdk-ai#readme",
   "bugs": {
