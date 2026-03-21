@@ -1,6 +1,10 @@
-# WeChat SDK
+# wechat-sdk-ai
 
-A comprehensive Node.js SDK for WeChat Official Accounts and Mini Programs.
+[![npm version](https://badge.fury.io/js/wechat-sdk-ai.svg)](https://badge.fury.io/js/wechat-sdk-ai)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
+
+一个全面的 Node.js 微信开发 SDK，支持微信公众号和小程序，零依赖，TypeScript 开发。
 
 ## Features
 
@@ -12,16 +16,18 @@ A comprehensive Node.js SDK for WeChat Official Accounts and Mini Programs.
 - 🐛 **Debug Mode** - Detailed logging for troubleshooting
 - 💾 **Multiple Cache Backends** - Memory, Redis, File
 
-## Installation
+## 📦 安装
 
 ```bash
-npm install wechat-sdk
+npm install wechat-sdk-ai
 ```
 
-## Quick Start
+## 🔧 快速开始
+
+### 公众号
 
 ```typescript
-import { WeChatSDK } from 'wechat-sdk';
+import { WeChatSDK } from 'wechat-sdk-ai';
 
 // From environment variables
 const sdk = WeChatSDK.fromEnv();
@@ -46,7 +52,7 @@ const sdk = WeChatSDK.fromOptions({
 });
 ```
 
-## Mini Program
+## 小程序
 
 ```typescript
 // Login
@@ -69,7 +75,7 @@ const { data: qrcode } = await sdk.mp().getQrCode({ path: '/pages/index' });
 const { data } = await sdk.mp().msgSecCheck('content to check');
 ```
 
-## Official Account
+## 公众号
 
 ```typescript
 // Get access token
@@ -139,3 +145,9 @@ WECHAT_LOG_LEVEL=debug
 ## License
 
 MIT
+
+## 🔗 链接
+
+- [GitHub 仓库](https://github.com/dlldsys/wechat-sdk-ai)
+- [npm 包](https://www.npmjs.com/package/wechat-sdk-ai)
+- [问题反馈](https://github.com/dlldsys/wechat-sdk-ai/issues)
