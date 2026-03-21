@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - WECHAT_OFFICIAL_APPID=${WECHAT_OFFICIAL_APPID}
+      - WECHAT_OFFICIAL_SECRET=${WECHAT_OFFICIAL_SECRET}
+      - WECHAT_OFFICIAL_TOKEN=${WECHAT_OFFICIAL_TOKEN}
+      - WECHAT_OFFICIAL_AES_KEY=${WECHAT_OFFICIAL_AES_KEY}
+      - WECHAT_MINI_APPID=${WECHAT_MINI_APPID}
+      - WECHAT_MINI_SECRET=${WECHAT_MINI_SECRET}
+      - DEBUG=true
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    depends_on:
+      - redis
+      - mock-server
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  mock-server:
+    build:
+      context: ./mock-server
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+
+volumes:
+  redis_data:
