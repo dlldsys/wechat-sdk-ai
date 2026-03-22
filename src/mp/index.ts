@@ -55,7 +55,7 @@ export class WeChatMP {
     const result = await this.tokenManager.getAccessToken(this.config.appId, this.config.appSecret, forceRefresh);
     
     if (result.err) {
-      return { err: result.err, data: { accessToken: '', expiresIn: 0 } };
+      return { err: result.err, data: null as unknown as { accessToken: string; expiresIn: number } };
     }
     
     return {
@@ -104,7 +104,7 @@ export class WeChatMP {
       return { err: tokenResult.err, data: null };
     }
 
-    const result = await this.message.sendSubscribeMessage(tokenResult.data.accessToken, message);
+    const result = await this.message.sendSubscribeMessage(tokenResult.data?.accessToken ?? '', message);
     return { err: result.err, data: null };
   }
 
@@ -130,7 +130,7 @@ export class WeChatMP {
       return { err: tokenResult.err, data: null };
     }
 
-    const result = await this.message.sendUniformMessage(tokenResult.data.accessToken, message);
+    const result = await this.message.sendUniformMessage(tokenResult.data?.accessToken ?? '', message);
     return { err: result.err, data: null };
   }
 
@@ -140,7 +140,7 @@ export class WeChatMP {
       return { err: tokenResult.err, data: null };
     }
 
-    const result = await this.security.imgSecCheck(tokenResult.data.accessToken, media);
+    const result = await this.security.imgSecCheck(tokenResult.data?.accessToken ?? '', media);
     return { err: result.err, data: null };
   }
 
@@ -150,7 +150,7 @@ export class WeChatMP {
       return { err: tokenResult.err, data: { suggest: '', label: 0 } };
     }
 
-    const result = await this.security.msgSecCheck(tokenResult.data.accessToken, content, openid, scene);
+    const result = await this.security.msgSecCheck(tokenResult.data?.accessToken ?? '', content, openid, scene);
     if (result.err) {
       return { err: result.err, data: { suggest: '', label: 0 } };
     }
@@ -172,7 +172,7 @@ export class WeChatMP {
       return { err: tokenResult.err, data: Buffer.alloc(0) };
     }
 
-    return this.qrcode.get(tokenResult.data.accessToken, options);
+    return this.qrcode.get(tokenResult.data?.accessToken ?? '', options);
   }
 
   async getUnlimitedQrCode(options: {
@@ -189,7 +189,7 @@ export class WeChatMP {
       return { err: tokenResult.err, data: Buffer.alloc(0) };
     }
 
-    return this.qrcode.getUnlimited(tokenResult.data.accessToken, options);
+    return this.qrcode.getUnlimited(tokenResult.data?.accessToken ?? '', options);
   }
 
   async generateUrlScheme(options: {
@@ -208,7 +208,7 @@ export class WeChatMP {
       return { err: tokenResult.err, data: '' };
     }
 
-    const result = await this.urlScheme.generate(tokenResult.data.accessToken, options);
+    const result = await this.urlScheme.generate(tokenResult.data?.accessToken ?? '', options);
     if (result.err) {
       return { err: result.err, data: '' };
     }
@@ -229,7 +229,7 @@ export class WeChatMP {
       return { err: tokenResult.err, data: '' };
     }
 
-    const result = await this.urlLink.generate(tokenResult.data.accessToken, options);
+    const result = await this.urlLink.generate(tokenResult.data?.accessToken ?? '', options);
     if (result.err) {
       return { err: result.err, data: '' };
     }
@@ -243,7 +243,7 @@ export class WeChatMP {
       return { err: tokenResult.err, data: null };
     }
 
-    const result = await this.cloud.invokeFunction(tokenResult.data.accessToken, env, name, data);
+    const result = await this.cloud.invokeFunction(tokenResult.data?.accessToken ?? '', env, name, data);
     if (result.err) {
       return { err: result.err, data: null };
     }

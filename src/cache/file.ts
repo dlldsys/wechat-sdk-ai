@@ -43,13 +43,15 @@ export class FileCache extends BaseCache implements CacheInterface {
       const filePath = path.join(this.cacheDir, file);
       try {
         const content = fs.readFileSync(filePath, 'utf-8');
-        const entry = JSON.parse(content) as { expiresAt: number };
+        const entry = JSON.parse(content) as { value: unknown; expiresAt: number };
         
-        if (entry.expiresAt < now) {
+        if (entry.expiresAt && entry.expiresAt < now) {
           fs.unlinkSync(filePath);
         }
-      } catch {
-        fs.unlinkSync(filePath);
+      } catch (error) {
+        if (error instanceof SyntaxError) {
+         	fs.unlinkSync(filePath);
+        }
       }
     }
   }
