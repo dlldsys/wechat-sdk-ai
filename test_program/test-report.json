@@ -1,95 +1,602 @@
 {
   "summary": {
-    "total": 14,
-    "passed": 8,
-    "failed": 6,
-    "successRate": "57.1%"
+    "total": 73,
+    "passed": 55,
+    "failed": 18,
+    "successRate": "75.3%",
+    "timestamp": "2026-03-23T02:09:51.653Z"
+  },
+  "modules": {
+    "Core": {
+      "total": 6,
+      "passed": 4,
+      "failed": 2,
+      "apis": []
+    },
+    "Menu": {
+      "total": 3,
+      "passed": 2,
+      "failed": 1,
+      "apis": []
+    },
+    "User": {
+      "total": 3,
+      "passed": 2,
+      "failed": 1,
+      "apis": []
+    },
+    "Tag": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "apis": []
+    },
+    "Material": {
+      "total": 3,
+      "passed": 2,
+      "failed": 1,
+      "apis": []
+    },
+    "DataCube": {
+      "total": 5,
+      "passed": 1,
+      "failed": 4,
+      "apis": []
+    },
+    "OAuth": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "apis": []
+    },
+    "QrCode": {
+      "total": 3,
+      "passed": 2,
+      "failed": 1,
+      "apis": []
+    },
+    "MiniProgram": {
+      "total": 6,
+      "passed": 1,
+      "failed": 5,
+      "apis": []
+    },
+    "Delivery": {
+      "total": 3,
+      "passed": 1,
+      "failed": 2,
+      "apis": []
+    },
+    "Cloud": {
+      "total": 2,
+      "passed": 1,
+      "failed": 1,
+      "apis": []
+    },
+    "Utility": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0,
+      "apis": []
+    },
+    "Structure": {
+      "total": 30,
+      "passed": 30,
+      "failed": 0,
+      "apis": []
+    }
   },
   "details": [
     {
+      "module": "Core",
       "name": "获取access_token",
       "success": true,
-      "duration": 334,
+      "duration": 426,
       "error": null
     },
     {
+      "module": "Core",
       "name": "获取用户信息",
       "success": true,
-      "duration": 250,
+      "duration": 234,
       "error": null
     },
     {
+      "module": "Core",
       "name": "创建菜单",
       "success": false,
-      "duration": 41,
+      "duration": 43,
       "error": "[412] HTTP Error: 412"
     },
     {
+      "module": "Core",
       "name": "获取JS-SDK配置",
       "success": true,
-      "duration": 1313,
+      "duration": 1247,
       "error": null
     },
     {
+      "module": "Core",
       "name": "发送模板消息",
       "success": false,
       "duration": 40,
       "error": "[412] HTTP Error: 412"
     },
     {
-      "name": "code2Session",
-      "success": false,
-      "duration": 7515,
-      "error": "[40029] invalid code, rid: 69c00913-32b5d9b7-33db3690"
+      "module": "Core",
+      "name": "删除菜单",
+      "success": true,
+      "duration": 1599,
+      "error": null
     },
     {
-      "name": "内容安全检查",
-      "success": false,
-      "duration": 293,
-      "error": "[412] HTTP Error: 412"
-    },
-    {
-      "name": "生成小程序码",
-      "success": false,
-      "duration": 1203,
-      "error": "[412] HTTP Error: 412"
-    },
-    {
-      "name": "发送订阅消息",
-      "success": false,
-      "duration": 1200,
-      "error": "[412] HTTP Error: 412"
-    },
-    {
-      "name": "签名生成",
+      "module": "Menu",
+      "name": "菜单管理初始化",
       "success": true,
       "duration": 0,
       "error": null
     },
     {
+      "module": "Menu",
+      "name": "获取菜单",
+      "success": false,
+      "duration": 7722,
+      "error": "[46003] menu no exist rid: 69c0a0af-6a554f78-6f3b6fe4"
+    },
+    {
+      "module": "Menu",
+      "name": "获取菜单配置",
+      "success": true,
+      "duration": 204,
+      "error": null
+    },
+    {
+      "module": "User",
+      "name": "用户管理初始化",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "User",
+      "name": "获取用户列表",
+      "success": true,
+      "duration": 186,
+      "error": null
+    },
+    {
+      "module": "User",
+      "name": "批量获取用户信息",
+      "success": false,
+      "duration": 37,
+      "error": "[412] HTTP Error: 412"
+    },
+    {
+      "module": "Tag",
+      "name": "标签管理初始化",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Tag",
+      "name": "获取标签列表",
+      "success": true,
+      "duration": 137,
+      "error": null
+    },
+    {
+      "module": "Material",
+      "name": "素材管理初始化",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Material",
+      "name": "获取素材总数",
+      "success": true,
+      "duration": 250,
+      "error": null
+    },
+    {
+      "module": "Material",
+      "name": "获取图片素材列表",
+      "success": false,
+      "duration": 42,
+      "error": "[412] HTTP Error: 412"
+    },
+    {
+      "module": "DataCube",
+      "name": "数据分析初始化",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "DataCube",
+      "name": "获取用户增减数据",
+      "success": false,
+      "duration": 39,
+      "error": "[412] HTTP Error: 412"
+    },
+    {
+      "module": "DataCube",
+      "name": "获取累计用户数据",
+      "success": false,
+      "duration": 1196,
+      "error": "[412] HTTP Error: 412"
+    },
+    {
+      "module": "DataCube",
+      "name": "获取图文群发数据",
+      "success": false,
+      "duration": 1172,
+      "error": "[412] HTTP Error: 412"
+    },
+    {
+      "module": "DataCube",
+      "name": "获取接口分析数据",
+      "success": false,
+      "duration": 1181,
+      "error": "[412] HTTP Error: 412"
+    },
+    {
+      "module": "OAuth",
+      "name": "生成授权URL",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "OAuth",
+      "name": "生成静默授权URL",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "QrCode",
+      "name": "二维码初始化",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "QrCode",
+      "name": "创建临时二维码",
+      "success": false,
+      "duration": 0,
+      "error": "Cannot read properties of null (reading 'ticket')"
+    },
+    {
+      "module": "QrCode",
+      "name": "获取二维码URL",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "MiniProgram",
+      "name": "获取access_token",
+      "success": true,
+      "duration": 1383,
+      "error": null
+    },
+    {
+      "module": "MiniProgram",
+      "name": "code2Session",
+      "success": false,
+      "duration": 7489,
+      "error": "[40029] invalid code, rid: 69c0a0c1-0d5ea4f2-5c033809"
+    },
+    {
+      "module": "MiniProgram",
+      "name": "内容安全检查",
+      "success": false,
+      "duration": 40,
+      "error": "[412] HTTP Error: 412"
+    },
+    {
+      "module": "MiniProgram",
+      "name": "生成小程序码",
+      "success": false,
+      "duration": 1186,
+      "error": "[412] HTTP Error: 412"
+    },
+    {
+      "module": "MiniProgram",
+      "name": "发送订阅消息",
+      "success": false,
+      "duration": 1188,
+      "error": "[412] HTTP Error: 412"
+    },
+    {
+      "module": "MiniProgram",
+      "name": "获取订阅模板列表",
+      "success": false,
+      "duration": 7330,
+      "error": "[40001] invalid credential, access_token is invalid or not latest, could get access_token by getStableAccessToken, more details at https://mmbizurl.cn/s/JtxxFh33r rid: 69c0a0cb-61eda492-5b0d660a"
+    },
+    {
+      "module": "Delivery",
+      "name": "物流服务初始化",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Delivery",
+      "name": "获取物流公司列表",
+      "success": false,
+      "duration": 7219,
+      "error": "[40066] invalid url rid: 69c0a0d2-60099e8b-528589bd"
+    },
+    {
+      "module": "Delivery",
+      "name": "获取配送员列表",
+      "success": false,
+      "duration": 7212,
+      "error": "[40066] invalid url rid: 69c0a0da-09249080-35f8cbfd"
+    },
+    {
+      "module": "Cloud",
+      "name": "云开发初始化",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Cloud",
+      "name": "获取环境列表",
+      "success": false,
+      "duration": 39,
+      "error": "[412] HTTP Error: 412"
+    },
+    {
+      "module": "Utility",
+      "name": "签名生成",
+      "success": true,
+      "duration": 1,
+      "error": null
+    },
+    {
+      "module": "Utility",
       "name": "随机字符串生成",
       "success": true,
       "duration": 0,
       "error": null
     },
     {
+      "module": "Utility",
       "name": "时间戳生成",
       "success": true,
       "duration": 0,
       "error": null
     },
     {
+      "module": "Utility",
       "name": "XML解析",
       "success": true,
-      "duration": 1,
+      "duration": 0,
       "error": null
     },
     {
-      "name": "加密解密",
+      "module": "Utility",
+      "name": "XML生成",
       "success": true,
       "duration": 0,
-      "error": "功能存在但需要正确配置"
+      "error": "功能存在"
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.menu",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.kf",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.template",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.user",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.tag",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.material",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.media",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.oauth",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.jsapi",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.broadcast",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.subscribe",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.qrcode",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.semantic",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.datacube",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.comment",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.draft",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "公众号.freepublish",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "小程序.login",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "小程序.message",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "小程序.subscribeTemplate",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "小程序.cloud",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "小程序.security",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "小程序.qrcode",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "小程序.nearby",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "小程序.plugin",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "小程序.urlScheme",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "小程序.urlLink",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "小程序.shortLink",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "小程序.delivery",
+      "success": true,
+      "duration": 0,
+      "error": null
+    },
+    {
+      "module": "Structure",
+      "name": "小程序.instantDelivery",
+      "success": true,
+      "duration": 0,
+      "error": null
     }
-  ],
-  "timestamp": "2026-03-22T15:22:19.520Z"
+  ]
 }

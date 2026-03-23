@@ -4,6 +4,9 @@ import { MaterialAPI, MediaAPI } from './material';
 import { OAuthAPI, JsApiAPI } from './oauth';
 import { BroadcastAPI, SubscribeMessageAPI } from './broadcast';
 import { QrCodeAPI, SemanticAPI } from './qrcode';
+import { DataAnalysisAPI } from './datacube';
+import { CommentAPI } from './comment';
+import { DraftAPI, FreePublishAPI } from './draft';
 import type { TokenManager } from '../token';
 import type { WxResponse, OfficialAccountConfig } from '../types';
 
@@ -24,6 +27,10 @@ export class WeChatOfficial {
   public subscribe: SubscribeMessageAPI;
   public qrcode: QrCodeAPI;
   public semantic: SemanticAPI;
+  public datacube: DataAnalysisAPI;
+  public comment: CommentAPI;
+  public draft: DraftAPI;
+  public freepublish: FreePublishAPI;
 
   constructor(
     config: OfficialAccountConfig,
@@ -45,6 +52,10 @@ export class WeChatOfficial {
     this.subscribe = new SubscribeMessageAPI(tokenManager);
     this.qrcode = new QrCodeAPI(tokenManager);
     this.semantic = new SemanticAPI(tokenManager);
+    this.datacube = new DataAnalysisAPI(tokenManager);
+    this.comment = new CommentAPI(tokenManager);
+    this.draft = new DraftAPI(tokenManager);
+    this.freepublish = new FreePublishAPI(tokenManager);
   }
 
   get appId(): string {
@@ -231,4 +242,4 @@ export class WeChatOfficial {
   }
 }
 
-export { MenuAPI, KFMessageAPI, TemplateMessageAPI, UserAPI, UserTagAPI, MaterialAPI, MediaAPI, OAuthAPI, JsApiAPI, BroadcastAPI, SubscribeMessageAPI, QrCodeAPI, SemanticAPI };
+export { MenuAPI, KFMessageAPI, TemplateMessageAPI, UserAPI, UserTagAPI, MaterialAPI, MediaAPI, OAuthAPI, JsApiAPI, BroadcastAPI, SubscribeMessageAPI, QrCodeAPI, SemanticAPI, DataAnalysisAPI, CommentAPI, DraftAPI, FreePublishAPI };

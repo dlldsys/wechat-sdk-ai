@@ -10,8 +10,8 @@ const config = {
   },
   miniPrograms: {
     test: {
-      appId: 'wx1e5466401a31c0b6',
-      appSecret: '8e3c288468368acd1cf9bb3bc4ff4883'
+      appId: 'wx45b7d4e30d226b77',
+      appSecret: 'f59072c2fc6d92dac553f9fafa46518f'
     }
   },
   debug: false

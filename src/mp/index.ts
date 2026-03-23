@@ -2,6 +2,7 @@ import { LoginAPI, DecryptAPI } from './login';
 import { MessageAPI, SubscribeTemplateAPI } from './message';
 import { CloudAPI, SecurityAPI } from './cloud';
 import { QrCodeAPI, NearbyAPI, PluginAPI, UrlSchemeAPI, UrlLinkAPI, ShortLinkAPI } from './qrcode';
+import { DeliveryAPI, InstantDeliveryAPI } from './delivery';
 import type { TokenManager } from '../token';
 import type { WxResponse, MiniProgramConfig } from '../types';
 
@@ -21,6 +22,8 @@ export class WeChatMP {
   public urlScheme: UrlSchemeAPI;
   public urlLink: UrlLinkAPI;
   public shortLink: ShortLinkAPI;
+  public delivery: DeliveryAPI;
+  public instantDelivery: InstantDeliveryAPI;
 
   constructor(
     config: MiniProgramConfig,
@@ -41,6 +44,8 @@ export class WeChatMP {
     this.urlScheme = new UrlSchemeAPI(tokenManager);
     this.urlLink = new UrlLinkAPI(tokenManager);
     this.shortLink = new ShortLinkAPI(tokenManager);
+    this.delivery = new DeliveryAPI(tokenManager);
+    this.instantDelivery = new InstantDeliveryAPI(tokenManager);
   }
 
   get appId(): string {
@@ -252,4 +257,4 @@ export class WeChatMP {
   }
 }
 
-export { LoginAPI, DecryptAPI, MessageAPI, SubscribeTemplateAPI, CloudAPI, SecurityAPI, QrCodeAPI, NearbyAPI, PluginAPI, UrlSchemeAPI, UrlLinkAPI, ShortLinkAPI };
+export { LoginAPI, DecryptAPI, MessageAPI, SubscribeTemplateAPI, CloudAPI, SecurityAPI, QrCodeAPI, NearbyAPI, PluginAPI, UrlSchemeAPI, UrlLinkAPI, ShortLinkAPI, DeliveryAPI, InstantDeliveryAPI };
