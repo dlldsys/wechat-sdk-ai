@@ -50,7 +50,10 @@ export class FileCache extends BaseCache implements CacheInterface {
         }
       } catch (error) {
         if (error instanceof SyntaxError) {
-         	fs.unlinkSync(filePath);
+          fs.unlinkSync(filePath);
+        } else {
+          // eslint-disable-next-line no-console
+          console.error(`[FileCache] Failed to process cache file: ${filePath}`, error);
         }
       }
     }
