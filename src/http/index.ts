@@ -153,6 +153,9 @@ export class WeChatHttpClient {
             return;
           }
           
+          const contentType = res.headers['content-type'] || '';
+          const isJsonExpected = contentType.includes('application/json');
+          
           try {
             const json = JSON.parse(data) as T & WxBaseResponse;
             const error = WxError.fromResponse(json, requestId);
@@ -161,11 +164,23 @@ export class WeChatHttpClient {
               err: error,
               data: json,
             });
-          } catch {
-            resolve({
-              err: null,
-              data: data as unknown as T,
-            });
+          } catch (parseError) {
+            if (isJsonExpected) {
+              this.logger.warn('Failed to parse expected JSON response', { 
+                requestId, 
+                contentType,
+                data: data.substring(0, 200) 
+              });
+              resolve({
+                err: new WxError(ErrorCode.SYSTEM_ERROR, 'Invalid JSON response', requestId),
+                data: null as T,
+              });
+            } else {
+              resolve({
+                err: null,
+                data: data as unknown as T,
+              });
+            }
           }
         });
       });

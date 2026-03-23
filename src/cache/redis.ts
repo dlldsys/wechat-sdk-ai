@@ -68,6 +68,7 @@ export class RedisLock implements LockInterface {
   private client: RedisClient;
   private prefix: string;
   private unlockScript: string;
+  private lockTokens: Map<string, string> = new Map();
 
   constructor(client: RedisClient, prefix: string = 'wechat:lock:') {
     this.client = client;
@@ -94,12 +95,19 @@ export class RedisLock implements LockInterface {
     const token = this.generateToken();
     
     const result = await this.client.set(fullKey, token, 'NX', 'EX', ttl);
+    if (result === 'OK') {
+      this.lockTokens.set(fullKey, token);
+    }
     return result === 'OK';
   }
 
   async release(key: string): Promise<void> {
     const fullKey = this.getKey(key);
-    await this.client.eval(this.unlockScript, 1, fullKey, '');
+    const token = this.lockTokens.get(fullKey);
+    if (token) {
+      await this.client.eval(this.unlockScript, 1, fullKey, token);
+      this.lockTokens.delete(fullKey);
+    }
   }
 
   async isLocked(key: string): Promise<boolean> {

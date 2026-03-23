@@ -67,7 +67,7 @@ export class WeChatOfficial {
     const result = await this.tokenManager.getAccessToken(this.config.appId, this.config.appSecret, forceRefresh);
     
     if (result.err) {
-      return { err: result.err, data: { accessToken: '', expiresIn: 0 } };
+      return { err: result.err, data: null as unknown as { accessToken: string; expiresIn: number } };
     }
     
     return {
@@ -87,7 +87,7 @@ export class WeChatOfficial {
     const result = await this.tokenManager.getJsApiTicket(this.config.appId, accessToken, forceRefresh);
     
     if (result.err) {
-      return { err: result.err, data: { ticket: '', expiresIn: 0 } };
+      return { err: result.err, data: null as unknown as { ticket: string; expiresIn: number } };
     }
     
     return {
@@ -112,12 +112,12 @@ export class WeChatOfficial {
       return { err: tokenResult.err, data: null as unknown as ReturnType<typeof this.jsapi.generateConfig> };
     }
 
-    const ticketResult = await this.getJsApiTicket(tokenResult.data.accessToken);
+    const ticketResult = await this.getJsApiTicket(tokenResult.data?.accessToken ?? '');
     if (ticketResult.err) {
       return { err: ticketResult.err, data: null as unknown as ReturnType<typeof this.jsapi.generateConfig> };
     }
 
-    const config = this.jsapi.generateConfig(this.config.appId, ticketResult.data.ticket, url, debug, jsApiList);
+    const config = this.jsapi.generateConfig(this.config.appId, ticketResult.data?.ticket ?? '', url, debug, jsApiList);
     return { err: null, data: config };
   }
 
@@ -130,12 +130,12 @@ export class WeChatOfficial {
   }): Promise<WxResponse<{ msgid: number }>> {
     const tokenResult = await this.getAccessToken();
     if (tokenResult.err) {
-      return { err: tokenResult.err, data: { msgid: 0 } };
+      return { err: tokenResult.err, data: null as unknown as { msgid: number } };
     }
 
-    const result = await this.template.send(tokenResult.data.accessToken, message);
+    const result = await this.template.send(tokenResult.data?.accessToken ?? '', message);
     if (result.err) {
-      return { err: result.err, data: { msgid: 0 } };
+      return { err: result.err, data: null as unknown as { msgid: number } };
     }
 
     return { err: null, data: { msgid: result.data.msgid ?? 0 } };
@@ -147,7 +147,7 @@ export class WeChatOfficial {
       return { err: tokenResult.err, data: null };
     }
 
-    const result = await this.kf.sendText(tokenResult.data.accessToken, openId, content, kfAccount);
+    const result = await this.kf.sendText(tokenResult.data?.accessToken ?? '', openId, content, kfAccount);
     return { err: result.err, data: null };
   }
 
@@ -168,7 +168,7 @@ export class WeChatOfficial {
       return { err: tokenResult.err, data: null as unknown as ReturnType<typeof this.user.getUserInfo> extends WxResponse<infer T> ? T : never };
     }
 
-    return this.user.getUserInfo(tokenResult.data.accessToken, openId, lang);
+    return this.user.getUserInfo(tokenResult.data?.accessToken ?? '', openId, lang);
   }
 
   async createMenu(menu: {
@@ -185,7 +185,7 @@ export class WeChatOfficial {
       return { err: tokenResult.err, data: null };
     }
 
-    const result = await this.menu.create(tokenResult.data.accessToken, menu);
+    const result = await this.menu.create(tokenResult.data?.accessToken ?? '', menu);
     return { err: result.err, data: null };
   }
 
@@ -195,7 +195,7 @@ export class WeChatOfficial {
       return { err: tokenResult.err, data: null };
     }
 
-    const result = await this.menu.delete(tokenResult.data.accessToken);
+    const result = await this.menu.delete(tokenResult.data?.accessToken ?? '');
     return { err: result.err, data: null };
   }
 

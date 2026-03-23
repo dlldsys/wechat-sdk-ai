@@ -9,25 +9,25 @@
     {
       "name": "获取access_token",
       "success": true,
-      "duration": 387,
+      "duration": 334,
       "error": null
     },
     {
       "name": "获取用户信息",
       "success": true,
-      "duration": 191,
+      "duration": 250,
       "error": null
     },
     {
       "name": "创建菜单",
       "success": false,
-      "duration": 42,
+      "duration": 41,
       "error": "[412] HTTP Error: 412"
     },
     {
       "name": "获取JS-SDK配置",
       "success": true,
-      "duration": 1272,
+      "duration": 1313,
       "error": null
     },
     {
@@ -39,25 +39,25 @@
     {
       "name": "code2Session",
       "success": false,
-      "duration": 7482,
-      "error": "[40029] invalid code, rid: 69beb8ac-1389b427-4be3b26a"
+      "duration": 7515,
+      "error": "[40029] invalid code, rid: 69c00913-32b5d9b7-33db3690"
     },
     {
       "name": "内容安全检查",
       "success": false,
-      "duration": 260,
+      "duration": 293,
       "error": "[412] HTTP Error: 412"
     },
     {
       "name": "生成小程序码",
       "success": false,
-      "duration": 1167,
+      "duration": 1203,
       "error": "[412] HTTP Error: 412"
     },
     {
       "name": "发送订阅消息",
       "success": false,
-      "duration": 1151,
+      "duration": 1200,
       "error": "[412] HTTP Error: 412"
     },
     {
@@ -81,7 +81,7 @@
     {
       "name": "XML解析",
       "success": true,
-      "duration": 0,
+      "duration": 1,
       "error": null
     },
     {
@@ -91,5 +91,5 @@
       "error": "功能存在但需要正确配置"
     }
   ],
-  "timestamp": "2026-03-21T15:26:57.408Z"
+  "timestamp": "2026-03-22T15:22:19.520Z"
 }

@@ -3,6 +3,21 @@ import * as path from 'path';
 import type { CacheInterface } from './index';
 import { BaseCache, MemoryLock } from './index';
 
+interface SafeCacheEntry {
+  value: unknown;
+  expiresAt: number;
+}
+
+function isCacheEntry(obj: unknown): obj is SafeCacheEntry {
+  if (typeof obj !== 'object' || obj === null) return false;
+  const entry = obj as Record<string, unknown>;
+  return (
+    'expiresAt' in entry &&
+    typeof entry['expiresAt'] === 'number' &&
+    entry['expiresAt'] > 0
+  );
+}
+
 export class FileCache extends BaseCache implements CacheInterface {
   private cacheDir: string;
   private defaultTtl: number;
@@ -34,43 +49,68 @@ export class FileCache extends BaseCache implements CacheInterface {
   }
 
   private cleanup(): void {
-    const files = fs.readdirSync(this.cacheDir);
+    let files: string[];
+    try {
+      files = fs.readdirSync(this.cacheDir);
+    } catch {
+      return;
+    }
+
     const now = Date.now();
 
     for (const file of files) {
       if (!file.endsWith('.json')) continue;
-      
+
       const filePath = path.join(this.cacheDir, file);
       try {
+        const stat = fs.statSync(filePath);
+        if (!stat.isFile()) continue;
+
         const content = fs.readFileSync(filePath, 'utf-8');
-        const entry = JSON.parse(content) as { expiresAt: number };
-        
-        if (entry.expiresAt < now) {
+        const entry = JSON.parse(content);
+
+        if (isCacheEntry(entry) && entry.expiresAt < now) {
           fs.unlinkSync(filePath);
         }
-      } catch {
-        fs.unlinkSync(filePath);
+      } catch (error) {
+        if (error instanceof SyntaxError || (error as NodeJS.ErrnoException)?.code === 'ENOENT') {
+          try {
+            fs.unlinkSync(filePath);
+          } catch {
+            // ignore cleanup failure
+          }
+        }
       }
     }
   }
 
   async get<T>(key: string): Promise<T | null> {
     const filePath = this.getFilePath(key);
-    
+
     if (!fs.existsSync(filePath)) {
       return null;
     }
 
     try {
-      const content = fs.readFileSync(filePath, 'utf-8');
-      const entry = JSON.parse(content) as { value: T; expiresAt: number };
-      
-      if (entry.expiresAt < Date.now()) {
-        fs.unlinkSync(filePath);
+      const stat = fs.statSync(filePath);
+      if (!stat.isFile()) {
         return null;
       }
-      
-      return entry.value;
+
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const entry = JSON.parse(content);
+
+      if (!isCacheEntry(entry)) {
+        await this.delete(key);
+        return null;
+      }
+
+      if (entry.expiresAt < Date.now()) {
+        await this.delete(key);
+        return null;
+      }
+
+      return entry.value as T;
     } catch {
       return null;
     }
@@ -98,20 +138,30 @@ export class FileCache extends BaseCache implements CacheInterface {
 
   async has(key: string): Promise<boolean> {
     const filePath = this.getFilePath(key);
-    
+
     if (!fs.existsSync(filePath)) {
       return false;
     }
 
     try {
-      const content = fs.readFileSync(filePath, 'utf-8');
-      const entry = JSON.parse(content) as { expiresAt: number };
-      
-      if (entry.expiresAt < Date.now()) {
-        fs.unlinkSync(filePath);
+      const stat = fs.statSync(filePath);
+      if (!stat.isFile()) {
         return false;
       }
-      
+
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const entry = JSON.parse(content);
+
+      if (!isCacheEntry(entry)) {
+        await this.delete(key);
+        return false;
+      }
+
+      if (entry.expiresAt < Date.now()) {
+        await this.delete(key);
+        return false;
+      }
+
       return true;
     } catch {
       return false;
@@ -119,11 +169,20 @@ export class FileCache extends BaseCache implements CacheInterface {
   }
 
   async clear(): Promise<void> {
-    const files = fs.readdirSync(this.cacheDir);
-    
+    let files: string[];
+    try {
+      files = fs.readdirSync(this.cacheDir);
+    } catch {
+      return;
+    }
+
     for (const file of files) {
       if (file.endsWith('.json')) {
-        fs.unlinkSync(path.join(this.cacheDir, file));
+        try {
+          fs.unlinkSync(path.join(this.cacheDir, file));
+        } catch {
+          // ignore cleanup failure
+        }
       }
     }
   }

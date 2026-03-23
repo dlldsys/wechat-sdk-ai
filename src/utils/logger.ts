@@ -33,6 +33,14 @@ export class Logger {
     return Logger.instances.get(name)!;
   }
 
+  static clearInstance(name: string): boolean {
+    return Logger.instances.delete(name);
+  }
+
+  static clearAllInstances(): void {
+    Logger.instances.clear();
+  }
+
   setLevel(level: LogLevel): void {
     this.level = level;
   }

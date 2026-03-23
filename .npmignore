@@ -1,0 +1,58 @@
+# Source files
+src/
+tests/
+mock-server/
+examples/
+
+# Configuration files
+vitest.config.ts
+tsconfig.json
+tsconfig*.json
+.eslintrc*
+.eslintignore
+.prettierrc*
+.prettierignore
+
+# Development files
+*.test.ts
+*.spec.ts
+coverage/
+.nyc_output/
+
+# Documentation source
+*.md
+!README.md
+!CHANGELOG.md
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+Jenkinsfile
+
+# Package management
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Environment files
+.env
+.env.*
+*.env
+
+# Misc
+*.log
+npm-debug.log*
+lerna-debug.log*
