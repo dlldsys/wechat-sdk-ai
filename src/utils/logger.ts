@@ -14,6 +14,32 @@ export interface LogEntry {
   data?: Record<string, unknown>;
 }
 
+// 敏感字段列表 - 日志中必须脱敏
+const SENSITIVE_FIELDS = [
+  'appSecret',
+  'app_secret',
+  'AppSecret',
+  'secret',
+  'password',
+  'token',
+  'access_token',
+  'refresh_token',
+  'encodingAESKey',
+  'encoding_aes_key',
+  'aesKey',
+  'aes_key',
+  'session_key',
+  'sessionKey',
+  'phoneNumber',
+  'encryptedData',
+  'encrypted_data',
+];
+
+/**
+ * Logger 类
+ * 1. 日志脱敏：自动过滤敏感字段
+ * 2. 禁止输出堆栈/路径
+ */
 export class Logger {
   private level: LogLevel;
   private prefix: string;
@@ -89,12 +115,15 @@ export class Logger {
   }
 
   private log(level: LogLevel, message: string, data?: Record<string, unknown>): void {
+    // 脱敏处理：过滤敏感信息
+    const sanitizedData = data ? this.sanitizeData(data) : undefined;
+    
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),
       level,
       prefix: this.prefix,
       message,
-      data,
+      data: sanitizedData,
     };
 
     const output = this.formatEntry(entry);
@@ -119,6 +148,60 @@ export class Logger {
     }
   }
 
+  /**
+   * 敏感数据脱敏
+   * 递归遍历对象，将敏感字段替换为 ****
+   */
+  private sanitizeData(data: Record<string, unknown>): Record<string, unknown> {
+    const result: Record<string, unknown> = {};
+    
+    for (const [key, value] of Object.entries(data)) {
+      if (this.isSensitiveField(key)) {
+        result[key] = this.maskValue(value);
+      } else if (value !== null && typeof value === 'object') {
+        if (Array.isArray(value)) {
+          result[key] = value.map(item => 
+            typeof item === 'object' && item !== null 
+              ? this.sanitizeData(item as Record<string, unknown>) 
+              : item
+          );
+        } else {
+          result[key] = this.sanitizeData(value as Record<string, unknown>);
+        }
+      } else {
+        result[key] = value;
+      }
+    }
+    
+    return result;
+  }
+
+  /**
+   * 判断是否为敏感字段
+   */
+  private isSensitiveField(key: string): boolean {
+    const lowerKey = key.toLowerCase();
+    return SENSITIVE_FIELDS.some(field => lowerKey === field.toLowerCase());
+  }
+
+  /**
+   * 掩码处理值
+   * 字符串显示前后各2位，其余为 ****
+   * Buffer 显示 [Buffer]
+   */
+  private maskValue(value: unknown): string {
+    if (typeof value === 'string') {
+      if (value.length <= 4) {
+        return '****';
+      }
+      return value.substring(0, 2) + '****' + value.substring(value.length - 2);
+    }
+    if (Buffer.isBuffer(value)) {
+      return '[Buffer]';
+    }
+    return '****';
+  }
+
   private formatEntry(entry: LogEntry): string {
     const parts = [
       `[${entry.timestamp}]`,
@@ -131,6 +214,7 @@ export class Logger {
     
     parts.push(entry.message);
     
+    // 只在 debug 模式下输出详细数据
     if (entry.data && (this.debugMode || this.level === 'debug')) {
       parts.push(JSON.stringify(entry.data, null, 2));
     }
@@ -147,6 +231,81 @@ export class Logger {
   }
 }
 
+/**
+ * 创建日志实例
+ */
 export function createLogger(appId: string, options?: LoggerOptions): Logger {
   return Logger.getInstance(appId, options);
+}
+
+/**
+ * 脱敏辅助函数 - 供外部使用
+ */
+export function sanitizeObject(obj: Record<string, unknown>): Record<string, unknown> {
+  return sanitizeDataStatic(obj);
+}
+
+// 静态版本的脱敏函数（供外部工具函数使用）
+function sanitizeDataStatic(data: Record<string, unknown>): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+  
+  for (const [key, value] of Object.entries(data)) {
+    if (isSensitiveFieldStatic(key)) {
+      result[key] = maskValueStatic(value);
+    } else if (value !== null && typeof value === 'object') {
+      if (Array.isArray(value)) {
+        result[key] = value.map(item => 
+          typeof item === 'object' && item !== null 
+            ? sanitizeDataStatic(item as Record<string, unknown>) 
+            : item
+        );
+      } else {
+        result[key] = sanitizeDataStatic(value as Record<string, unknown>);
+      }
+    } else {
+      result[key] = value;
+    }
+  }
+  
+  return result;
+}
+
+// 静态版本敏感字段判断
+function isSensitiveFieldStatic(key: string): boolean {
+  const lowerKey = key.toLowerCase();
+  return SENSITIVE_FIELDS.some(field => lowerKey === field.toLowerCase());
+}
+
+// 静态版本掩码处理
+function maskValueStatic(value: unknown): string {
+  if (typeof value === 'string') {
+    if (value.length <= 4) {
+      return '****';
+    }
+    return value.substring(0, 2) + '****' + value.substring(value.length - 2);
+  }
+  if (Buffer.isBuffer(value)) {
+    return '[Buffer]';
+  }
+  return '****';
+}
+
+/**
+ * 掩码 AppSecret
+ */
+export function maskAppSecret(secret: string): string {
+  if (!secret || secret.length <= 4) {
+    return '****';
+  }
+  return secret.substring(0, 2) + '****' + secret.substring(secret.length - 2);
+}
+
+/**
+ * 掩码 AES Key
+ */
+export function maskAesKey(key: string): string {
+  if (!key || key.length <= 4) {
+    return '****';
+  }
+  return key.substring(0, 4) + '****';
 }

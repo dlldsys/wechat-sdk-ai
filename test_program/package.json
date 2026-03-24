@@ -12,6 +12,6 @@
   "type": "commonjs",
   "dependencies": {
     "axios": "^1.13.6",
-    "wechat-sdk-ai": "^1.0.3"
+    "wechat-sdk-ai": "file:.."
   }
 }

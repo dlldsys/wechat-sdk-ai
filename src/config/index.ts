@@ -1,6 +1,14 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import type { OfficialAccountConfig, MiniProgramConfig, WeChatConfigOptions, AppConfig, ConfigLoadOptions } from '../types';
+import { WxError, ErrorCode } from '../types';
+
+// [加固] AppId 格式校验正则：wx + 16位数字/字母
+const APPID_REGEX = /^wx[0-9a-zA-Z]{16}$/;
+// [加固] AppSecret 最小长度
+const APPSECRET_MIN_LENGTH = 10;
+// [加固] EncodingAESKey 固定长度 43
+const AES_KEY_LENGTH = 43;
 
 export class WeChatConfig {
   private officialAccounts: Map<string, OfficialAccountConfig> = new Map();
@@ -88,10 +96,15 @@ export class WeChatConfig {
   }
 
   loadFromJson(jsonPath: string): void {
+    // [加固] 参数校验
+    if (!jsonPath || typeof jsonPath !== 'string' || !jsonPath.trim()) {
+      throw new WxError(ErrorCode.PARAM_MISSING, 'jsonPath is required');
+    }
+
     const absolutePath = path.isAbsolute(jsonPath) ? jsonPath : path.resolve(process.cwd(), jsonPath);
     
     if (!fs.existsSync(absolutePath)) {
-      throw new Error(`Config file not found: ${absolutePath}`);
+      throw new WxError(ErrorCode.CONFIG_NOT_FOUND, `Config file not found: ${absolutePath}`);
     }
 
     const content = fs.readFileSync(absolutePath, 'utf-8');
@@ -106,52 +119,111 @@ export class WeChatConfig {
         break;
       case 'json':
         if (!options.jsonPath) {
-          throw new Error('jsonPath is required for JSON config loading');
+          throw new WxError(ErrorCode.PARAM_MISSING, 'jsonPath is required for JSON config loading');
         }
         this.loadFromJson(options.jsonPath);
         break;
       case 'memory':
         break;
       default:
-        throw new Error(`Unknown config source: ${options.source}`);
+        throw new WxError(ErrorCode.INVALID_PARAMETER, `Unknown config source: ${options.source}`);
     }
   }
 
   addOfficialAccount(name: string, config: OfficialAccountConfig): void {
-    if (!config.appId || !config.appSecret) {
-      throw new Error('appId and appSecret are required for official account');
+    // [加固] 参数校验
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      throw new WxError(ErrorCode.PARAM_MISSING, 'name is required');
     }
+    if (!config?.appId || typeof config.appId !== 'string' || !APPID_REGEX.test(config.appId)) {
+      throw new WxError(ErrorCode.INVALID_APPID, `Invalid appId format: ${config?.appId}`);
+    }
+    if (!config?.appSecret || typeof config.appSecret !== 'string' || config.appSecret.length < APPSECRET_MIN_LENGTH) {
+      throw new WxError(ErrorCode.INVALID_SECRET, 'Invalid appSecret format');
+    }
+    // [加固] EncodingAESKey 格式校验（如果提供）
+    if (config.encodingAESKey && config.encodingAESKey.length !== AES_KEY_LENGTH) {
+      throw new WxError(ErrorCode.ENCODING_AES_KEY_ERROR, `EncodingAESKey must be ${AES_KEY_LENGTH} characters`);
+    }
+    
     this.officialAccounts.set(name, { ...config });
   }
 
   addMiniProgram(name: string, config: MiniProgramConfig): void {
-    if (!config.appId || !config.appSecret) {
-      throw new Error('appId and appSecret are required for mini program');
+    // [加固] 参数校验
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      throw new WxError(ErrorCode.PARAM_MISSING, 'name is required');
     }
+    if (!config?.appId || typeof config.appId !== 'string' || !APPID_REGEX.test(config.appId)) {
+      throw new WxError(ErrorCode.INVALID_APPID, `Invalid appId format: ${config?.appId}`);
+    }
+    if (!config?.appSecret || typeof config.appSecret !== 'string' || config.appSecret.length < APPSECRET_MIN_LENGTH) {
+      throw new WxError(ErrorCode.INVALID_SECRET, 'Invalid appSecret format');
+    }
+    
     this.miniPrograms.set(name, { ...config });
   }
 
   updateOfficialAccount(name: string, config: Partial<OfficialAccountConfig>): void {
+    // [加固] 参数校验
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      throw new WxError(ErrorCode.PARAM_MISSING, 'name is required');
+    }
+    
     const existing = this.officialAccounts.get(name);
     if (!existing) {
-      throw new Error(`Official account "${name}" not found`);
+      throw new WxError(ErrorCode.CONFIG_NOT_FOUND, `Official account "${name}" not found`);
     }
+    
+    // [加固] 部分更新时仍需校验格式
+    if (config.appId !== undefined && !APPID_REGEX.test(config.appId)) {
+      throw new WxError(ErrorCode.INVALID_APPID, `Invalid appId format`);
+    }
+    if (config.appSecret !== undefined && config.appSecret.length < APPSECRET_MIN_LENGTH) {
+      throw new WxError(ErrorCode.INVALID_SECRET, 'Invalid appSecret format');
+    }
+    if (config.encodingAESKey !== undefined && config.encodingAESKey.length !== AES_KEY_LENGTH) {
+      throw new WxError(ErrorCode.ENCODING_AES_KEY_ERROR, `EncodingAESKey must be ${AES_KEY_LENGTH} characters`);
+    }
+    
     this.officialAccounts.set(name, { ...existing, ...config });
   }
 
   updateMiniProgram(name: string, config: Partial<MiniProgramConfig>): void {
+    // [加固] 参数校验
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      throw new WxError(ErrorCode.PARAM_MISSING, 'name is required');
+    }
+    
     const existing = this.miniPrograms.get(name);
     if (!existing) {
-      throw new Error(`Mini program "${name}" not found`);
+      throw new WxError(ErrorCode.CONFIG_NOT_FOUND, `Mini program "${name}" not found`);
     }
+    
+    // [加固] 部分更新时仍需校验格式
+    if (config.appId !== undefined && !APPID_REGEX.test(config.appId)) {
+      throw new WxError(ErrorCode.INVALID_APPID, `Invalid appId format`);
+    }
+    if (config.appSecret !== undefined && config.appSecret.length < APPSECRET_MIN_LENGTH) {
+      throw new WxError(ErrorCode.INVALID_SECRET, 'Invalid appSecret format');
+    }
+    
     this.miniPrograms.set(name, { ...existing, ...config });
   }
 
   removeOfficialAccount(name: string): boolean {
+    // [加固] 参数校验
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      throw new WxError(ErrorCode.PARAM_MISSING, 'name is required');
+    }
     return this.officialAccounts.delete(name);
   }
 
   removeMiniProgram(name: string): boolean {
+    // [加固] 参数校验
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      throw new WxError(ErrorCode.PARAM_MISSING, 'name is required');
+    }
     return this.miniPrograms.delete(name);
   }
 
@@ -195,15 +267,23 @@ export class WeChatConfig {
   }
 
   setDefaultOfficialAccount(name: string): void {
+    // [加固] 参数校验
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      throw new WxError(ErrorCode.PARAM_MISSING, 'name is required');
+    }
     if (!this.officialAccounts.has(name)) {
-      throw new Error(`Official account "${name}" not found`);
+      throw new WxError(ErrorCode.CONFIG_NOT_FOUND, `Official account "${name}" not found`);
     }
     this.defaultOfficialAccount = name;
   }
 
   setDefaultMiniProgram(name: string): void {
+    // [加固] 参数校验
+    if (!name || typeof name !== 'string' || !name.trim()) {
+      throw new WxError(ErrorCode.PARAM_MISSING, 'name is required');
+    }
     if (!this.miniPrograms.has(name)) {
-      throw new Error(`Mini program "${name}" not found`);
+      throw new WxError(ErrorCode.CONFIG_NOT_FOUND, `Mini program "${name}" not found`);
     }
     this.defaultMiniProgram = name;
   }

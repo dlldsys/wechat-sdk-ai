@@ -41,6 +41,8 @@ export interface HttpConfig {
   retries?: number;
   retryDelay?: number;
   baseURL?: string;
+  /** 强制要求 HTTPS，默认为 true */
+  forceHttps?: boolean;
 }
 
 export interface TokenInfo {

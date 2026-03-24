@@ -1,27 +1,33 @@
-import * as https from 'https';
-import * as http from 'http';
-import { URL } from 'url';
-import { WxError, ErrorCode, WxResponse, WxBaseResponse } from '../types';
-import type { HttpConfig } from '../types';
+import * as https from 'node:https';
+import * as http from 'node:http';
+import { URL } from 'node:url';
+import { WxError, ErrorCode } from '../types/error';
+import type { HttpConfig } from '../types/config';
 import { Logger } from '../utils/logger';
+import type { WxResponse, WxBaseResponse } from '../types/response';
 
 export interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   headers?: Record<string, string>;
   timeout?: number;
   retries?: number;
+  forceHttps?: boolean;
 }
 
 export class WeChatHttpClient {
-  private timeout: number;
-  private retries: number;
-  private retryDelay: number;
-  private logger: Logger;
+  // 修复：使用 const 替代 let
+  private readonly timeout: number;
+  private readonly retries: number;
+  private readonly retryDelay: number;
+  private readonly logger: Logger;
+  private readonly forceHttps: boolean;
 
   constructor(config?: HttpConfig, logger?: Logger) {
-    this.timeout = config?.timeout ?? 30000;
-    this.retries = config?.retries ?? 3;
+    // 修复：默认超时 10s，最多重试 2 次
+    this.timeout = config?.timeout ?? 10000;
+    this.retries = config?.retries ?? 2;
     this.retryDelay = config?.retryDelay ?? 1000;
+    this.forceHttps = config?.forceHttps ?? true;
     this.logger = logger ?? new Logger({ level: 'info' });
   }
 
@@ -81,17 +87,31 @@ export class WeChatHttpClient {
   }
 
   private async request<T>(url: string, options: RequestOptions, body?: unknown): Promise<WxResponse<T>> {
+    const requestId = this.generateRequestId();
+    
+    // HTTPS 校验：强制要求 HTTPS
+    const shouldForceHttps = options.forceHttps ?? this.forceHttps;
+    if (shouldForceHttps && !this.isSafeUrl(url)) {
+      this.logger.warn('Unsafe URL blocked', { requestId, url: this.maskUrl(url) });
+      return {
+        err: WxError.unsafeUrl(url, requestId),
+        data: null as T,
+      };
+    }
+    
     const maxRetries = options?.retries ?? this.retries;
     let lastError: WxError | null = null;
     
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       if (attempt > 0) {
-        await this.sleep(this.retryDelay * Math.pow(2, attempt - 1));
-        this.logger.debug(`Retrying request (attempt ${attempt + 1}/${maxRetries + 1})`, { url });
+        // 指数退避：1s, 2s, 4s...
+        const delay = this.retryDelay * Math.pow(2, attempt - 1);
+        await this.sleep(delay);
+        this.logger.debug(`Retrying request (attempt ${attempt + 1}/${maxRetries + 1})`, { requestId, url: this.maskUrl(url), delay });
       }
       
       try {
-        const result = await this.doRequest<T>(url, options, body);
+        const result = await this.doRequest<T>(url, options, body, requestId);
         
         if (result.err && this.shouldRetry(result.err)) {
           lastError = result.err;
@@ -100,7 +120,7 @@ export class WeChatHttpClient {
         
         return result;
       } catch (error) {
-        lastError = error instanceof WxError ? error : new WxError(ErrorCode.SYSTEM_ERROR, String(error));
+        lastError = error instanceof WxError ? error : new WxError(ErrorCode.SYSTEM_ERROR, String(error), requestId);
         
         if (!this.shouldRetry(lastError)) {
           break;
@@ -108,31 +128,70 @@ export class WeChatHttpClient {
       }
     }
     
+    // 达到最大重试次数
+    if (lastError) {
+      return {
+        err: WxError.httpMaxRetries(requestId),
+        data: null as T,
+      };
+    }
+    
     return {
-      err: lastError ?? new WxError(ErrorCode.SYSTEM_ERROR, 'Max retries exceeded'),
+      err: lastError ?? new WxError(ErrorCode.SYSTEM_ERROR, 'Request failed', requestId),
       data: null as T,
     };
   }
 
-  private async doRequest<T>(url: string, options: RequestOptions, body?: unknown): Promise<WxResponse<T>> {
-    const requestId = this.generateRequestId();
+  private isSafeUrl(url: string): boolean {
+    try {
+      const parsedUrl = new URL(url);
+      return parsedUrl.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  }
+
+  private maskUrl(url: string): string {
+    try {
+      const parsed = new URL(url);
+      return `${parsed.protocol}//${parsed.hostname}/***`;
+    } catch {
+      return '***';
+    }
+  }
+
+  private async doRequest<T>(url: string, options: RequestOptions, body?: unknown, requestId?: string): Promise<WxResponse<T>> {
+    const id = requestId ?? this.generateRequestId();
     const startTime = Date.now();
     
-    this.logger.debug(`Request started`, { requestId, url, method: options.method });
+    // 日志脱敏：隐藏敏感参数
+    this.logger.debug(`Request started`, { 
+      requestId: id, 
+      url: this.maskUrl(url), 
+      method: options.method,
+      timeout: options.timeout ?? this.timeout 
+    });
     
     return new Promise((resolve) => {
       const parsedUrl = new URL(url);
       const isHttps = parsedUrl.protocol === 'https:';
       const lib = isHttps ? https : http;
       
-      const requestOptions: http.RequestOptions = {
+      // 超时设置：默认 10s
+      const requestTimeout = options.timeout ?? this.timeout;
+      
+      const requestOptions: http.RequestOptions & { rejectUnauthorized?: boolean } = {
         hostname: parsedUrl.hostname,
         port: parsedUrl.port || (isHttps ? 443 : 80),
         path: parsedUrl.pathname + parsedUrl.search,
         method: options.method ?? 'GET',
         headers: options.headers ?? {},
-        timeout: options.timeout ?? this.timeout,
+        timeout: requestTimeout,
       };
+
+      if (isHttps) {
+        (requestOptions as https.RequestOptions).rejectUnauthorized = true;
+      }
       
       const req = lib.request(requestOptions, (res) => {
         let data = '';
@@ -143,11 +202,16 @@ export class WeChatHttpClient {
         
         res.on('end', () => {
           const duration = Date.now() - startTime;
-          this.logger.debug(`Request completed`, { requestId, duration, statusCode: res.statusCode });
+          this.logger.debug(`Request completed`, { 
+            requestId: id, 
+            duration, 
+            statusCode: res.statusCode,
+            url: this.maskUrl(url)
+          });
           
           if (res.statusCode && res.statusCode >= 400) {
             resolve({
-              err: new WxError(res.statusCode, `HTTP Error: ${res.statusCode}`, requestId),
+              err: new WxError(res.statusCode, `HTTP Error: ${res.statusCode}`, id),
               data: null as T,
             });
             return;
@@ -158,7 +222,7 @@ export class WeChatHttpClient {
           
           try {
             const json = JSON.parse(data) as T & WxBaseResponse;
-            const error = WxError.fromResponse(json, requestId);
+            const error = WxError.fromResponse(json, id);
             
             resolve({
               err: error,
@@ -167,12 +231,13 @@ export class WeChatHttpClient {
           } catch (parseError) {
             if (isJsonExpected) {
               this.logger.warn('Failed to parse expected JSON response', { 
-                requestId, 
+                requestId: id, 
                 contentType,
-                data: data.substring(0, 200) 
+                data: data.substring(0, 200),
+                url: this.maskUrl(url)
               });
               resolve({
-                err: new WxError(ErrorCode.SYSTEM_ERROR, 'Invalid JSON response', requestId),
+                err: new WxError(ErrorCode.SYSTEM_ERROR, 'Invalid JSON response', id),
                 data: null as T,
               });
             } else {
@@ -186,18 +251,40 @@ export class WeChatHttpClient {
       });
       
       req.on('error', (error) => {
-        this.logger.error(`Request failed`, { requestId, error: error.message });
+        // SSL 证书错误处理
+        if (error.message.includes('certificate') || error.message.includes('SSL')) {
+          this.logger.error(`SSL Error`, { 
+            requestId: id, 
+            url: this.maskUrl(url),
+            error: 'SSL certificate verification failed'
+          });
+          resolve({
+            err: WxError.httpSslError(id),
+            data: null as T,
+          });
+          return;
+        }
+        
+        this.logger.error(`Request failed`, { 
+          requestId: id, 
+          url: this.maskUrl(url),
+          error: 'Connection failed'
+        });
         resolve({
-          err: new WxError(ErrorCode.SYSTEM_ERROR, error.message, requestId),
+          err: WxError.httpConnectionError(id),
           data: null as T,
         });
       });
       
       req.on('timeout', () => {
         req.destroy();
-        this.logger.error(`Request timeout`, { requestId });
+        this.logger.error(`Request timeout`, { 
+          requestId: id,
+          url: this.maskUrl(url),
+          timeout: requestTimeout
+        });
         resolve({
-          err: new WxError(ErrorCode.SYSTEM_ERROR, 'Request timeout', requestId),
+          err: WxError.httpTimeout(id),
           data: null as T,
         });
       });
@@ -214,13 +301,17 @@ export class WeChatHttpClient {
     });
   }
 
+  // 可重试的错误码判断
   private shouldRetry(error: WxError): boolean {
     const retryableCodes: number[] = [
       ErrorCode.SYSTEM_ERROR,
       ErrorCode.RATE_LIMIT,
       ErrorCode.TOO_MANY_REQUESTS,
+      ErrorCode.HTTP_TIMEOUT,
+      ErrorCode.HTTP_CONNECTION_ERROR,
     ];
     
+    // 5xx 错误可重试
     return retryableCodes.includes(error.errcode) || error.errcode >= 500;
   }
 

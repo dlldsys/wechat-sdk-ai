@@ -1,0 +1,511 @@
+{
+  "summary": {
+    "total": 70,
+    "passed": 23,
+    "failed": 47,
+    "categories": {
+      "General": {
+        "passed": 23,
+        "failed": 47,
+        "total": 70
+      }
+    }
+  },
+  "details": [
+    {
+      "name": "getAccessToken",
+      "success": true,
+      "duration": 654,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "refreshAccessToken",
+      "success": true,
+      "duration": 0,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "user.getUserInfo",
+      "success": true,
+      "duration": 229,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "user.getUserList",
+      "success": true,
+      "duration": 283,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "user.setUserRemark",
+      "success": false,
+      "duration": 43,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "tag.create",
+      "success": false,
+      "duration": 1168,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "tag.get",
+      "success": true,
+      "duration": 1348,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "tag.getUserTags",
+      "success": false,
+      "duration": 40,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "menu.create",
+      "success": false,
+      "duration": 1187,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "menu.get",
+      "success": false,
+      "duration": 3536,
+      "error": "请求重试次数超限",
+      "category": "General"
+    },
+    {
+      "name": "menu.delete",
+      "success": true,
+      "duration": 420,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "menu.getConfig",
+      "success": true,
+      "duration": 244,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "template.getTemplateList",
+      "success": true,
+      "duration": 223,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "sendTemplateMessage",
+      "success": false,
+      "duration": 214,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "getOAuthUrl",
+      "success": true,
+      "duration": 0,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "oauth.refreshAccessToken",
+      "success": false,
+      "duration": 0,
+      "error": "无效的 AppID",
+      "category": "General"
+    },
+    {
+      "name": "oauth.checkAccessToken",
+      "success": false,
+      "duration": 0,
+      "error": "official.oauth.checkAccessToken is not a function",
+      "category": "General"
+    },
+    {
+      "name": "getJsApiConfig",
+      "success": true,
+      "duration": 1471,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "jsapi.getCardTicket",
+      "success": true,
+      "duration": 115,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "kf.sendText",
+      "success": false,
+      "duration": 42,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "kf.getKfList",
+      "success": false,
+      "duration": 0,
+      "error": "official.kf.getKfList is not a function",
+      "category": "General"
+    },
+    {
+      "name": "kf.getOnlineList",
+      "success": false,
+      "duration": 0,
+      "error": "official.kf.getOnlineList is not a function",
+      "category": "General"
+    },
+    {
+      "name": "qrcode.createLimit",
+      "success": false,
+      "duration": 1175,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "qrcode.createTemp",
+      "success": false,
+      "duration": 0,
+      "error": "Cannot read properties of null (reading 'ticket')",
+      "category": "General"
+    },
+    {
+      "name": "qrcode.getUrl",
+      "success": true,
+      "duration": 0,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "qrcode.getShortUrl",
+      "success": false,
+      "duration": 1183,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "semantic.understand",
+      "success": false,
+      "duration": 1187,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "datacube.getUserSummary",
+      "success": false,
+      "duration": 1171,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "datacube.getUserCumulate",
+      "success": false,
+      "duration": 1177,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "datacube.getInterfaceSummary",
+      "success": false,
+      "duration": 1172,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "material.getCount",
+      "success": false,
+      "duration": 0,
+      "error": "official.material.getCount is not a function",
+      "category": "General"
+    },
+    {
+      "name": "material.batchGet",
+      "success": false,
+      "duration": 0,
+      "error": "official.material.batchGet is not a function",
+      "category": "General"
+    },
+    {
+      "name": "broadcast.getPreviewUrl",
+      "success": false,
+      "duration": 0,
+      "error": "official.broadcast.getPreviewUrl is not a function",
+      "category": "General"
+    },
+    {
+      "name": "broadcast.getSpeed",
+      "success": true,
+      "duration": 1356,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "comment.open",
+      "success": false,
+      "duration": 40,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "comment.close",
+      "success": false,
+      "duration": 1188,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "draft.count",
+      "success": true,
+      "duration": 1353,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "draft.getList",
+      "success": false,
+      "duration": 0,
+      "error": "official.draft.getList is not a function",
+      "category": "General"
+    },
+    {
+      "name": "freepublish.getArticleStatus",
+      "success": false,
+      "duration": 0,
+      "error": "official.freepublish.getArticleStatus is not a function",
+      "category": "General"
+    },
+    {
+      "name": "freepublish.getArticleList",
+      "success": false,
+      "duration": 41,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "subscribe.getCategory",
+      "success": false,
+      "duration": 3349,
+      "error": "请求重试次数超限",
+      "category": "General"
+    },
+    {
+      "name": "getAccessToken",
+      "success": true,
+      "duration": 296,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "refreshAccessToken",
+      "success": true,
+      "duration": 0,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "code2Session",
+      "success": false,
+      "duration": 3388,
+      "error": "请求重试次数超限",
+      "category": "General"
+    },
+    {
+      "name": "checkSession",
+      "success": false,
+      "duration": 0,
+      "error": "mp.login.checkSession is not a function",
+      "category": "General"
+    },
+    {
+      "name": "sendSubscribeMessage",
+      "success": false,
+      "duration": 214,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "sendUniformMessage",
+      "success": false,
+      "duration": 1160,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "msgSecCheck",
+      "success": false,
+      "duration": 1178,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "imgSecCheck",
+      "success": false,
+      "duration": 1187,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "mediaCheckAsync",
+      "success": false,
+      "duration": 1178,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "getUserRiskRank",
+      "success": false,
+      "duration": 1170,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "getQrCode",
+      "success": false,
+      "duration": 1355,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "getUnlimitedQrCode",
+      "success": false,
+      "duration": 1190,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "urlScheme.generate",
+      "success": false,
+      "duration": 1174,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "urlLink.generate",
+      "success": false,
+      "duration": 1189,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "shortLink.generate",
+      "success": false,
+      "duration": 1168,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "nearby.add",
+      "success": false,
+      "duration": 1193,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "nearby.getList",
+      "success": false,
+      "duration": 3376,
+      "error": "请求重试次数超限",
+      "category": "General"
+    },
+    {
+      "name": "plugin.getDevPluginList",
+      "success": false,
+      "duration": 41,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "cloud.invokeFunction",
+      "success": false,
+      "duration": 1198,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "delivery.getAllDelivery",
+      "success": false,
+      "duration": 3263,
+      "error": "请求重试次数超限",
+      "category": "General"
+    },
+    {
+      "name": "delivery.getDeliveryOrder",
+      "success": false,
+      "duration": 40,
+      "error": "HTTP Error: 412",
+      "category": "General"
+    },
+    {
+      "name": "subscribeTemplate.getCategory",
+      "success": true,
+      "duration": 1543,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "subscribeTemplate.getTemplateList",
+      "success": true,
+      "duration": 287,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "generateSignature",
+      "success": true,
+      "duration": 0,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "generateNonceStr(16)",
+      "success": true,
+      "duration": 0,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "generateNonceStr(32)",
+      "success": true,
+      "duration": 0,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "generateTimestamp",
+      "success": true,
+      "duration": 0,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "parseXml",
+      "success": true,
+      "duration": 0,
+      "error": null,
+      "category": "General"
+    },
+    {
+      "name": "XmlParser.parse",
+      "success": false,
+      "duration": 0,
+      "error": null,
+      "category": "General"
+    }
+  ],
+  "timestamp": "2026-03-24T03:33:25.744Z",
+  "sdkVersion": "1.0.4",
+  "localPackage": true,
+  "totalTime": 53584,
+  "successRate": "32.9%"
+}
